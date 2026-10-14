@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>Santiago cumple 18 · Invitación</title>
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cinzel:wght@500;700&family=Cormorant+Garamond:ital,wght@0,500;1,500;1,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --n0:#030a22; --n1:#061641; --n2:#0a2468; --n3:#123a99;
+  --white:#ffffff; --soft:#d9e6ff; --line:rgba(255,255,255,.55);
+  color-scheme:dark; box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--n0:#030a22;--n1:#061641;--n2:#0a2468;--n3:#123a99}}
+:root[data-theme="dark"]{--n0:#030a22;--n1:#061641;--n2:#0a2468;--n3:#123a99}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  min-height:100vh;overflow-x:hidden;color:var(--white);
+  font-family:'Cormorant Garamond',Georgia,serif;
+  background-color:var(--n0);
+  background-image:
+    linear-gradient(135deg,transparent 0 38%,rgba(255,255,255,.045) 38% 52%,transparent 52% 100%),
+    linear-gradient(45deg,transparent 0 55%,rgba(255,255,255,.04) 55% 68%,transparent 68% 100%),
+    radial-gradient(900px 600px at 50% 18%,var(--n3),var(--n1) 55%,var(--n0));
+  background-attachment:fixed;
+}
+canvas{position:fixed;inset:0;pointer-events:none}
+#stars{z-index:0}
+#confetti{z-index:60}
+.wrap{position:relative;z-index:1;max-width:460px;margin:0 auto;padding:26px 28px 70px}
+.cinzel{font-family:'Cinzel',Georgia,serif}
+
+/* Globos */
+#balloons{position:fixed;inset:0;z-index:2;pointer-events:none;overflow:hidden}
+.balloon{position:absolute;pointer-events:auto;cursor:pointer;-webkit-tap-highlight-color:transparent;
+  animation:bob var(--t,5s) ease-in-out infinite;animation-delay:var(--d,0s);transition:transform .15s}
+.balloon .b{position:relative;width:var(--w,70px);height:calc(var(--w,70px)*1.22);
+  border-radius:50% 50% 50% 50%/58% 58% 42% 42%;
+  box-shadow:inset -8px -10px 18px rgba(0,0,20,.35),0 8px 18px rgba(0,0,0,.35)}
+.balloon .b::before{content:"";position:absolute;left:20%;top:12%;width:24%;height:30%;border-radius:50%;
+  background:rgba(255,255,255,.55);filter:blur(2px);transform:rotate(-25deg)}
+.balloon .b::after{content:"";position:absolute;left:50%;bottom:-6px;margin-left:-5px;border:6px solid transparent;border-bottom:8px solid var(--k);
+  border-top:0;width:0;height:0}
+.balloon .s{display:block;width:1px;height:70px;margin:5px auto 0;background:linear-gradient(rgba(255,255,255,.55),transparent)}
+.balloon.blue .b{background:radial-gradient(circle at 32% 26%,#79adff,#1d52d6 52%,#0b2a86);--k:#1d52d6}
+.balloon.white .b{background:radial-gradient(circle at 32% 26%,#ffffff,#e4edff 52%,#a9bee6);--k:#dbe6fb}
+.balloon.fly{animation:none;pointer-events:none;opacity:0;transform:translate(var(--dx,0px),-130vh) rotate(var(--rot,8deg));transition:transform 2.8s cubic-bezier(.35,0,.75,.55),opacity .8s 2s}
+.balloon.back{animation:bob var(--t,5s) ease-in-out infinite,fadein 1.2s}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.balloon.pop{transform:scale(1.35);opacity:0;transition:transform .12s,opacity .12s}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-14px) rotate(2deg)}}
+
+/* Sobre */
+#intro{min-height:88vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;text-align:center}
+#intro p{margin:0;letter-spacing:.3em;text-transform:uppercase;font:500 12px 'Cinzel',serif;color:var(--soft)}
+.envelope{position:relative;width:min(320px,82vw);aspect-ratio:1.5;cursor:pointer;
+  filter:drop-shadow(0 20px 34px rgba(0,0,0,.55));animation:float 3.2s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-8px)}}
+.env-back{position:absolute;inset:0;background:#0b2a7a;border-radius:10px;border:1px solid var(--line)}
+.env-letter{position:absolute;left:8%;right:8%;top:8%;bottom:8%;background:#fff;border-radius:6px;
+  display:flex;align-items:center;justify-content:center;transition:transform .9s .35s cubic-bezier(.2,.8,.2,1)}
+.env-letter span{font-family:'Cinzel',serif;font-size:46px;font-weight:700;color:#0a2468}
+.env-front{position:absolute;inset:0;border-radius:10px;overflow:hidden}
+.env-front::before,.env-front::after{content:"";position:absolute;bottom:0;width:0;height:0;border-style:solid}
+.env-front::before{left:0;border-width:0 0 calc(min(320px,82vw)/1.5*.62) calc(min(320px,82vw)*.52);border-color:transparent transparent #0f3aa0 transparent}
+.env-front::after{right:0;border-width:0 calc(min(320px,82vw)*.52) calc(min(320px,82vw)/1.5*.62) 0;border-color:transparent transparent #0d3190 transparent}
+.env-flap{position:absolute;left:0;right:0;top:0;height:60%;background:#143fae;clip-path:polygon(0 0,100% 0,50% 100%);
+  transform-origin:top;transition:transform .6s ease,z-index 0s .3s;z-index:3;border-radius:10px 10px 0 0}
+.seal{position:absolute;left:50%;top:54%;transform:translate(-50%,-50%);width:58px;height:58px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#fff,#c9daf9);color:#0a2468;z-index:4;display:flex;align-items:center;justify-content:center;
+  font-family:'Cinzel',serif;font-weight:700;font-size:22px;box-shadow:0 6px 14px rgba(0,0,0,.45);transition:opacity .3s}
+.envelope.open{animation:none}
+.envelope.open .env-flap{transform:rotateX(180deg);z-index:0}
+.envelope.open .seal{opacity:0}
+.envelope.open .env-letter{transform:translateY(-70%)}
+
+/* Sobre mejorado */
+.ev-back{position:absolute;inset:0;z-index:1;border-radius:10px;background:linear-gradient(160deg,#0f3aa0,#081f63);border:1px solid rgba(255,255,255,.35)}
+.ev-letter{position:absolute;left:7%;right:7%;top:7%;height:82%;z-index:2;border-radius:6px;background:linear-gradient(#fff,#eaf1ff);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transition:transform .9s .35s cubic-bezier(.2,.8,.2,1);box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.ev-letter small{font:500 10px 'Cinzel',serif;letter-spacing:.3em;color:#2a4a96}
+.ev-letter b{font:700 52px/1 'Cinzel',serif;color:#0a2468}
+.ev-pocket{position:absolute;inset:0;z-index:3;width:100%;height:100%;display:block;clip-path:inset(0 round 10px)}
+.ev-flapwrap{position:absolute;left:0;right:0;top:0;height:53%;z-index:4;transform-origin:top;filter:drop-shadow(0 4px 4px rgba(0,0,0,.4));transition:transform .6s ease,z-index 0s .3s}
+.ev-flap{width:100%;height:100%;clip-path:polygon(0 0,100% 0,50% 100%);background:linear-gradient(180deg,#2a62d6,#1a4cbd);transition:background .1s .3s}
+.ev-seal{position:absolute;left:50%;top:53%;transform:translate(-50%,-50%);width:54px;height:54px;border-radius:50%;z-index:5;background:radial-gradient(circle at 35% 30%,#fff,#c9daf9 70%,#9db6e6);color:#0a2468;display:flex;align-items:center;justify-content:center;font:700 22px 'Cinzel',serif;box-shadow:0 5px 12px rgba(0,0,0,.5),inset 0 0 0 4px rgba(255,255,255,.65),inset 0 0 0 5px rgba(10,36,104,.25);transition:opacity .3s}
+.envelope.open .ev-flapwrap{transform:rotateX(180deg);z-index:1}
+.envelope.open .ev-flap{background:#0b2a7a}
+.envelope.open .ev-seal{opacity:0}
+.envelope.open .ev-letter{transform:translateY(-62%)}
+
+/* Invitación */
+#card{display:none;text-align:center}
+#card.show{display:block;animation:rise .9s cubic-bezier(.2,.8,.2,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(40px) scale(.96)}to{opacity:1;transform:none}}
+.te{margin:34px 0 0;font:500 clamp(18px,5.4vw,23px) 'Cinzel',serif;letter-spacing:.06em}
+.cumple{font-family:'Great Vibes','Snell Roundhand',cursive;font-size:clamp(58px,19vw,84px);line-height:1;margin:2px 0 0;
+  background:linear-gradient(180deg,#fff,#cfe0ff);-webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 4px 12px rgba(120,170,255,.35))}
+.n18{font-family:'Cinzel',serif;font-weight:700;font-size:clamp(130px,42vw,185px);line-height:.95;margin:0;cursor:pointer;user-select:none;
+  -webkit-tap-highlight-color:transparent;
+  background:linear-gradient(165deg,#fff 0 30%,#c4d6f7 48%,#ffffff 62%,#9fb8e8 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 6px 16px rgba(0,0,0,.5)) drop-shadow(0 0 18px rgba(150,190,255,.45));transition:transform .2s}
+.n18:active{transform:scale(.94) rotate(-2deg)}
+.hint{font:italic 500 14px 'Cormorant Garamond',serif;color:var(--soft);opacity:.85;animation:blink 2s infinite;margin-top:-2px}
+@keyframes blink{50%{opacity:.35}}
+.nombre{font:700 clamp(30px,9.5vw,42px) 'Cinzel',serif;letter-spacing:.06em;margin:16px 0 0}
+
+.datebar{display:flex;align-items:center;justify-content:center;gap:18px;margin:34px 0 0;text-align:left}
+.day{text-align:center;line-height:1}
+.day b{display:block;font:700 clamp(64px,20vw,86px) 'Cinzel',serif}
+.day span{font:500 clamp(16px,5vw,21px) 'Cinzel',serif;letter-spacing:.08em}
+.sep{width:1px;align-self:stretch;background:linear-gradient(transparent,var(--line),transparent)}
+.info{display:grid;gap:14px}
+.info div{display:flex;align-items:center;gap:12px;font:500 clamp(17px,5vw,21px) 'Cormorant Garamond',serif}
+.ico{flex:0 0 40px;height:40px;border-radius:50%;background:#fff;color:#0a2468;display:flex;align-items:center;justify-content:center;font-size:18px}
+
+.honor{font-style:italic;font-weight:600;font-size:clamp(17px,5vw,20px);margin:36px 0 12px;line-height:1.3}
+.pill{display:flex;align-items:center;justify-content:center;gap:10px;text-decoration:none;color:#fff;
+  font:700 clamp(19px,5.6vw,23px) 'Cinzel',serif;letter-spacing:.04em;padding:13px 18px;margin:10px auto 0;max-width:330px;
+  border:1.5px solid var(--line);border-radius:999px;background:rgba(6,22,65,.75);
+  clip-path:polygon(7% 0,93% 0,100% 50%,93% 100%,7% 100%,0 50%);border-radius:0;position:relative;
+  box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.55)}
+.pill small{font:500 12px 'Cormorant Garamond',serif;letter-spacing:.08em;color:var(--soft)}
+.tapnote{font-size:13px;color:var(--soft);opacity:.8;margin-top:8px;font-style:italic}
+
+.cuenta{margin:30px auto 0;max-width:340px;border:1px solid var(--line);border-radius:18px;padding:16px;background:rgba(255,255,255,.06)}
+.cuenta .t{font:500 12px 'Cinzel',serif;letter-spacing:.25em;text-transform:uppercase;color:var(--soft)}
+.cuenta .num{font:700 24px 'Cinzel',serif;letter-spacing:.06em;margin:8px 0 12px;word-break:break-all}
+.copy{font:700 13px 'Cinzel',serif;letter-spacing:.14em;text-transform:uppercase;border:1.5px solid #fff;color:#fff;background:transparent;border-radius:999px;padding:10px 20px;cursor:pointer}
+.copy.ok{background:#fff;color:#0a2468}
+
+.panel{margin:32px auto 0;max-width:360px}
+.panel .t{font:500 12px 'Cinzel',serif;letter-spacing:.3em;text-transform:uppercase;color:var(--soft);margin:0 0 10px}
+.count{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.count div{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.3);border-radius:14px;padding:12px 2px}
+.count strong{display:block;font:700 28px 'Cinzel',serif}
+.count span{font:500 10px 'Cinzel',serif;letter-spacing:.14em;text-transform:uppercase;color:var(--soft)}
+.cal{display:inline-block;margin-top:22px;text-decoration:none;color:#0a2468;background:#fff;font:700 13px 'Cinzel',serif;letter-spacing:.14em;text-transform:uppercase;padding:14px 24px;border-radius:999px}
+.espero{font:700 clamp(24px,7vw,30px) 'Cinzel',serif;letter-spacing:.06em;margin:36px 0 0;color:#fff;text-shadow:0 0 18px rgba(150,190,255,.6)}
+.vest{font-style:italic;color:var(--soft);margin-top:8px;font-size:15px}
+</style>
+</head>
+<body>
+<canvas id="stars"></canvas>
+<div id="balloons"></div>
+<canvas id="confetti"></canvas>
+
+<div class="wrap">
+  <section id="intro">
+    <p>Tenés una invitación</p>
+    <div class="envelope" id="env" role="button" tabindex="0" aria-label="Abrir invitación">
+      <div class="ev-back"></div>
+      <div class="ev-letter"><small>TE INVITO</small><b>18</b><small>SANTIAGO</small></div>
+      <svg class="ev-pocket" viewBox="0 0 300 200" preserveAspectRatio="none" aria-hidden="true">
+        <defs>
+          <linearGradient id="gl" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1b4fc4"/><stop offset="1" stop-color="#0d3190"/></linearGradient>
+          <linearGradient id="gr" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1946b8"/><stop offset="1" stop-color="#0b2b86"/></linearGradient>
+          <linearGradient id="gb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2459cf"/><stop offset="1" stop-color="#0f3aa0"/></linearGradient>
+        </defs>
+        <polygon points="0,0 150,106 0,200" fill="url(#gl)"/>
+        <polygon points="300,0 150,106 300,200" fill="url(#gr)"/>
+        <polygon points="0,200 150,106 300,200" fill="url(#gb)"/>
+        <g fill="none" stroke="rgba(255,255,255,.28)" stroke-width="1"><polyline points="0,0 150,106 300,0"/><polyline points="0,200 150,106 300,200"/></g>
+      </svg>
+      <div class="ev-flapwrap"><div class="ev-flap"></div></div>
+      <div class="ev-seal">S</div>
+    </div>
+    <p style="letter-spacing:.15em">Tocá el sobre para abrirlo</p>
+  </section>
+
+  <section id="card">
+    <div class="te">TE INVITO A MI</div>
+    <div class="cumple">Cumpleaños</div>
+    <div class="n18" id="n18" role="button" aria-label="Tirar confeti">18</div>
+    <div class="hint">tocá el 18 y los globos ✦</div>
+    <div class="nombre">SANTIAGO</div>
+
+    <div class="datebar">
+      <div class="day"><b>07</b><span>NOVIEMBRE</span></div>
+      <div class="sep"></div>
+      <div class="info">
+        <div><span class="ico">🕗</span><span>Desde las 20:00 hs</span></div>
+        <div><span class="ico">📍</span><span>Salón 3 Focos</span></div>
+      </div>
+    </div>
+
+    <div class="honor">Será un honor contar contigo,<br>confirma tu asistencia al:</div>
+    <a class="pill" id="w1" target="_blank" rel="noopener">📱 091 081 947</a>
+    <a class="pill" id="w2" target="_blank" rel="noopener">📱 099 213 203</a>
+    <div class="tapnote">Tocá un número para confirmar por WhatsApp</div>
+
+    <div class="cuenta">
+      <div class="t">Número de cuenta</div>
+      <div class="num" id="cta">110648514-00001</div>
+      <button class="copy" id="copy" type="button">Copiar número</button>
+    </div>
+
+    <div class="panel">
+      <p class="t">Faltan</p>
+      <div class="count" id="count">
+        <div><strong id="d">--</strong><span>días</span></div>
+        <div><strong id="h">--</strong><span>horas</span></div>
+        <div><strong id="m">--</strong><span>min</span></div>
+        <div><strong id="s">--</strong><span>seg</span></div>
+      </div>
+    </div>
+
+    <a class="cal" id="gcal" target="_blank" rel="noopener">Agregar a mi calendario</a>
+    <div class="espero">¡TE ESPERO!</div>
+  </section>
+</div>
+
+<script>
+(function(){
+  // Estrellas
+  var sc=document.getElementById('stars'),sx=sc.getContext('2d'),stars=[];
+  function sizeStars(){sc.width=innerWidth;sc.height=innerHeight;stars=[];for(var i=0;i<80;i++)stars.push({x:Math.random()*sc.width,y:Math.random()*sc.height,r:Math.random()*1.5+.3,p:Math.random()*6.28,v:Math.random()*.02+.008});}
+  function drawStars(){sx.clearRect(0,0,sc.width,sc.height);
+    stars.forEach(function(s){s.p+=s.v;var a=.15+.6*Math.abs(Math.sin(s.p));sx.fillStyle='rgba(215,230,255,'+a+')';sx.beginPath();sx.arc(s.x,s.y,s.r,0,6.283);sx.fill();});
+    requestAnimationFrame(drawStars);}
+  sizeStars();addEventListener('resize',sizeStars);drawStars();
+
+  // Confeti
+  var cc=document.getElementById('confetti'),cx=cc.getContext('2d'),parts=[],running=false;
+  function sizeC(){cc.width=innerWidth;cc.height=innerHeight}
+  sizeC();addEventListener('resize',sizeC);
+  function burst(x,y,n,cols){
+    cols=cols||['#ffffff','#dbe7ff','#8db4ff','#3b6fe0','#ffffff','#b9ceff'];
+    for(var i=0;i<n;i++){var a=Math.random()*6.283,sp=Math.random()*9+3;
+      parts.push({x:x,y:y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-6,w:Math.random()*8+4,h:Math.random()*5+3,
+      c:cols[Math.floor(Math.random()*cols.length)],r:Math.random()*6.28,vr:(Math.random()-.5)*.3,life:130+Math.random()*60});}
+    if(!running){running=true;loop();}
+  }
+  function loop(){
+    cx.clearRect(0,0,cc.width,cc.height);
+    parts=parts.filter(function(p){return p.life>0&&p.y<cc.height+30});
+    parts.forEach(function(p){p.vy+=.28;p.vx*=.99;p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;p.life--;
+      cx.save();cx.translate(p.x,p.y);cx.rotate(p.r);cx.fillStyle=p.c;cx.fillRect(-p.w/2,-p.h/2,p.w,p.h);cx.restore();});
+    if(parts.length)requestAnimationFrame(loop);else{running=false;cx.clearRect(0,0,cc.width,cc.height);}
+  }
+
+  // Globos tocables
+  var layer=document.getElementById('balloons');
+  var spots=[
+    {x:-3,y:8,w:74,c:'blue'},{x:8,y:2,w:58,c:'white'},{x:-4,y:30,w:64,c:'white'},{x:2,y:44,w:78,c:'blue'},
+    {x:-5,y:62,w:68,c:'blue'},{x:6,y:74,w:56,c:'white'},
+    {x:88,y:6,w:70,c:'blue'},{x:80,y:1,w:56,c:'white'},{x:92,y:26,w:66,c:'white'},{x:86,y:42,w:76,c:'blue'},
+    {x:93,y:60,w:64,c:'blue'},{x:82,y:72,w:58,c:'white'}
+  ];
+  function makeBalloon(s,i){
+    var el=document.createElement('div');el.className='balloon '+s.c;
+    el.style.left=s.x+'%';el.style.top=s.y+'%';
+    el.style.setProperty('--w',s.w+'px');el.style.setProperty('--t',(4+Math.random()*3)+'s');el.style.setProperty('--d',(-Math.random()*4)+'s');
+    el.innerHTML='<div class="b"></div><span class="s"></span>';
+    el.addEventListener('click',function(){
+      if(el.classList.contains('pop'))return;
+      var r=el.getBoundingClientRect();
+      burst(r.left+r.width/2,r.top+r.height*.35,40,s.c==='blue'?['#3b6fe0','#1d52d6','#8db4ff','#fff']:['#fff','#dbe7ff','#b9ceff']);
+      el.classList.add('pop');
+      setTimeout(function(){el.style.display='none'},130);
+      setTimeout(function(){el.style.display='';el.classList.remove('pop');el.classList.add('back')},6000);
+      setTimeout(function(){el.classList.remove('back')},7300);
+    });
+    layer.appendChild(el);
+  }
+  spots.forEach(makeBalloon);
+
+  // Sobre
+  var env=document.getElementById('env'),opened=false;
+  function openEnv(){
+    if(opened)return;opened=true;env.classList.add('open');
+    setTimeout(function(){burst(innerWidth/2,innerHeight/2.4,110);},500);
+    setTimeout(function(){
+      document.getElementById('intro').style.display='none';
+      document.getElementById('card').classList.add('show');window.scrollTo(0,0);
+      burst(innerWidth/2,innerHeight/3,90);
+    },1500);
+  }
+  env.addEventListener('click',openEnv);
+  env.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' ')openEnv();});
+
+  document.getElementById('n18').addEventListener('click',function(){
+    var r=this.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,110);
+  });
+
+  // Cuenta regresiva
+  var target=new Date(2026,10,7,20,0,0).getTime();
+  function pad(n){return n<10?'0'+n:''+n}
+  function tick(){
+    var t=target-Date.now();
+    if(t<=0){document.getElementById('count').innerHTML='<div style="grid-column:1/-1"><strong>¡Es hoy! 🎉</strong></div>';return;}
+    document.getElementById('d').textContent=Math.floor(t/864e5);
+    document.getElementById('h').textContent=pad(Math.floor(t/36e5)%24);
+    document.getElementById('m').textContent=pad(Math.floor(t/6e4)%60);
+    document.getElementById('s').textContent=pad(Math.floor(t/1e3)%60);
+  }
+  tick();setInterval(tick,1000);
+
+  // Copiar cuenta
+  var cb=document.getElementById('copy');
+  cb.addEventListener('click',function(){
+    var txt=document.getElementById('cta').textContent.trim(),done=function(){cb.textContent='¡Copiado!';cb.classList.add('ok');setTimeout(function(){cb.textContent='Copiar número';cb.classList.remove('ok')},2000)};
+    try{
+      if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(done,fallback);}else fallback();
+    }catch(e){fallback();}
+    function fallback(){
+      try{var ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);done();}catch(e){cb.textContent='Mantené presionado el número';}
+    }
+  });
+
+  // Enlaces
+  var msg=encodeURIComponent('¡Hola! Confirmo mi asistencia al cumpleaños 18 de Santiago el sábado 7 de noviembre a las 20:00 hs en Salón 3 Focos 💙');
+  document.getElementById('w1').href='https://wa.me/59891081947?text='+msg;
+  document.getElementById('w2').href='https://wa.me/59899213203?text='+msg;
+  document.getElementById('gcal').href='https://calendar.google.com/calendar/render?action=TEMPLATE'
+    +'&text='+encodeURIComponent('Cumpleaños 18 de Santiago 🎉')
+    +'&dates=20261107T200000/20261108T040000'
+    +'&location='+encodeURIComponent('Salón 3 Focos');
+})();
+</script>
+</body>
+</html>
